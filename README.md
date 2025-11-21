@@ -1,26 +1,70 @@
-📦 NebulaHost — React App Hosting Platform
-NebulaHost is a lightweight, Vercel-inspired hosting platform that allows users to deploy React applications seamlessly.
-It provides a smooth workflow where users can upload their project, trigger a deployment pipeline, and host their app instantly.
+# 🚀 NebulaHost — Deploy React Apps Instantly
 
-Built with a modern stack — React, Express.js, AWS SDK, Redis, and Simple-Git, NebulaHost demonstrates a scalable microservices architecture tailored for frontend deployments.
+NebulaHost is a lightweight Vercel-style deployment platform where users can **deploy any public React GitHub repository** simply by submitting the repo URL.
 
-🚀 Features
-One-click React app deployment
+No zip uploads.  
+No manual configuration.  
+Just **paste your GitHub URL → get a live deployment link**.
 
-Microservices-based architecture
+---
 
-Deployment service powered by AWS SDK + Redis
+## 🌟 Features
 
-Upload service using Express.js + Simple-Git
+- Deploy any **public GitHub React project**
+- Automated build + hosting pipeline
+- AWS S3-powered static hosting
+- Redis caching for deployment status
+- Microservices architecture (Upload Service + Deploy Service)
+- Real-time status polling from UI
+- Clean React dashboard for deployments
 
-React-based dashboard for app management
+---
 
-Real-time deployment logs
+## 🧠 How NebulaHost Works
+GitHub Repo URL → Clone → Build → Upload to AWS → Live Deployment URL
 
-Redis caching for fast deployment status retrieval
+### Steps:
+1. User submits a **public GitHub repo URL**
+2. NebulaHost **clones the repo**
+3. System installs dependencies and builds:
+4. Build output is uploaded to AWS S3
+5. A **live deployed URL** is returned to the user
 
-Scalable architecture inspired by Vercel’s deployment flow
+---
 
+# 📩 API Endpoints
+
+## 🔹 1. Deploy React App (Using GitHub URL)
+
+### **POST /deploy**
+
+**Request Body:**
+
+```json
+{
+"repoUrl": "https://github.com/username/repo-name"
+}
+
+Example cURL:
+
+curl -X POST https://api.nebulahost.com/deploy \
+  -H "Content-Type: application/json" \
+  -d '{"repoUrl": "https://github.com/username/my-react-app"}'
+Response:
+
+{
+  "deploymentId": "ab12cd34",
+  "status": "queued"
+}
+🔹 2. Check Deployment Status
+GET /status/:deploymentId
+curl https://api.nebulahost.com/status/ab12cd34
+Response:
+
+{
+  "status": "success",
+  "url": "https://project123.nebulahost.com"
+}
 🏗️ Tech Stack
 Frontend
 React.js
@@ -29,124 +73,95 @@ TailwindCSS
 
 Axios
 
-Vite (optional)
-
 Backend
 Node.js
 
 Express.js
 
-AWS SDK
-
 Simple-Git
 
-Redis
+AWS SDK
 
 Infrastructure
 AWS S3
 
-AWS EC2 / local server
+Redis
 
-Redis Server
+Nginx (optional)
 
-Nginx (optional, for reverse proxy)
+Architecture
+Microservices
 
-📂 Project Structure
+REST APIs
+
+Deployment pipeline
+
+🧰 Project Structure
 nebula-host/
 │
-├── deploy-service/        # Handles AWS deployments & build process
-├── upload-service/        # Handles project file uploads
-├── frontend/              # React dashboard UI
-│
-├── shared/                # Constants, utilities, configs
-└── README.md
-⚙️ How It Works
-User uploads a React project
-
-Upload service saves it locally
-
-Simple-Git handles versioning
-
-Deployment is triggered
-
-Deploy-service fetches project
-
-Builds the React app
-
-Uploads build artifacts to AWS S3 (or any hosting bucket)
-
-Redis stores deployment status
-
-Allows real-time updates
-
-Faster retrieval for dashboards
-
-User gets a public hosting URL
-
-Similar to Vercel’s output links
-
-🛠️ Installation & Setup
-1️⃣ Clone the Repository
+├── deploy-service/     # Clones repo → Builds → Uploads to AWS
+├── upload-service/     # Receives GitHub URL → Triggers deploy
+├── frontend/           # Dashboard UI
+└── shared/             # Config, utils, constants
+⚙️ Running Locally (Developer Setup)
+1️⃣ Clone the repo
 git clone https://github.com/DevXprashant207/NebulaHost.git
 cd NebulaHost
 2️⃣ Install dependencies
-Upload Service:
-cd upload-service
-npm install
-Deploy Service:
+Deploy Service
 cd deploy-service
 npm install
-Frontend:
+Upload Service
+cd upload-service
+npm install
+Frontend
 cd frontend
 npm install
-3️⃣ Setup Environment Variables
-Deploy Service (deploy-service/.env)
-AWS_ACCESS_KEY=your_key
-AWS_SECRET_KEY=your_secret
-AWS_REGION=your_region
-S3_BUCKET_NAME=your_bucket
+3️⃣ Configure environment variables
+Deploy Service → deploy-service/.env
+AWS_ACCESS_KEY=xxx
+AWS_SECRET_KEY=xxx
+AWS_REGION=ap-south-1
+S3_BUCKET_NAME=nebula-host-bucket
 REDIS_URL=redis://localhost:6379
-Upload Service (upload-service/.env)
-UPLOAD_DIRECTORY=/uploads
-REDIS_URL=redis://localhost:6379
-Frontend (frontend/.env)
+Upload Service → upload-service/.env
+DEPLOY_SERVICE_URL=http://localhost:4000/deploy
+Frontend → frontend/.env
 VITE_API_URL=http://localhost:5000
-4️⃣ Run Services
+4️⃣ Start all services
 Upload Service
 cd upload-service
 npm run start
 Deploy Service
 cd deploy-service
 npm run start
-Frontend Dashboard
+Frontend UI
 cd frontend
 npm run dev
-🌐 Deployment Flow
-User Upload → Upload-Service → Deploy-Service → Build → AWS S3 → Public URL
-📡 API Endpoints
-POST /upload
-Upload a React project .zip file.
+🌐 Deployment Flow (Detailed)
+[Frontend UI] → [Upload API] → [Deploy Service]
+             → Clone Repo from GitHub
+             → Install Dependencies
+             → Build React App
+             → Upload 'dist' or 'build' folder to S3
+             → Return Public URL
+📈 Future Roadmap
+Support for Next.js / Vue / Svelte
 
-POST /deploy
-Trigger deployment for a project.
+File-based routing
 
-GET /status/:id
-Get deployment status from Redis.
+Custom domains
 
-📈 Future Improvements
-Custom domain support
+Authentication & user accounts
 
-CI/CD pipeline integration
+Build logs with WebSocket streaming
 
-Realtime WebSocket logs
+Teams and collaboration
 
-User authentication and teams
+Analytics dashboard
 
-Build analytics & usage insights
-
-Multi-framework support (Next.js, Vue)
-
-🧑‍💻 Author
+👨‍💻 Author
 Prashant
-Building developer tools & full-stack products.
+Full-Stack Developer | Cloud | DevTools
 GitHub: https://github.com/DevXprashant207
+
